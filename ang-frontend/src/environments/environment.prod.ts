@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.production.com'
+  apiUrl: 'https://fastapi-loan.onrender.com',
+  signatureServiceUrl: 'https://signature-service-khts.onrender.com'
 };

@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewChild, ElementRef, Renderer2 } from '@ang
 import { CommonModule } from '@angular/common';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 interface SignatureBox {
   x1: number;
@@ -66,7 +67,7 @@ export class PdfPreviewComponent implements OnInit {
       return url;
     }
     const cleanUrl = url.startsWith('/') ? url : `/${url}`;
-    const fullUrl = `http://localhost:8000${cleanUrl}`;
+    const fullUrl = `${environment.apiUrl}${cleanUrl}`;
     console.log('getFullUrl - Generated:', fullUrl);
     return fullUrl;
   }
