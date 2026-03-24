@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}
+Analytics Report | KANINI
+{% endblock title %}
+
+{% block style %}
+  
+{% endblock style %}
+
+{% block content %}
+
+<div class="container-fluid">
+    
+    <div class="breadcrumbs my-2">
+        <a href="/"><i class="bi bi-house"></i></a> | <span style="font-weight: 500;">Analytics Report</span>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    
+                    <iframe src="{% static 'clinical_report.html' %}" frameborder="0" width="100%" height="900px"></iframe>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock content %}

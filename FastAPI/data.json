@@ -1,0 +1,143 @@
+{
+    "classification": {
+        "predicted_class": "Unclassified",
+        "manual_review_required": true,
+        "validation_error": "Invalid category: "
+    },
+    "summary": {
+        "Summary": "This file is a set of Closing Instructions from Morgan Stanley Private Bank, National Association for loan number 6009105555 (borrowers Silvio and Carrie Gonzalez) relating to the refinance of the investment property at 92 Smith Street, Unit #17, Chelsea, MA. It includes general and title insurance instructions, rescission guidance, hazard insurance requirements, execution and funding procedures, a Settlement Agent acknowledgment form, and a Closing Conditions Addendum. Several referenced documents/addenda (e.g., Fees/Escrows Addendum, final Closing Disclosure, final Title Policy/Commitment, recorded security instruments) are referenced but not contained within the provided pages.",
+        "Bookmarks": [
+            {
+                "type": "Closing Instructions (header & loan summary)",
+                "page_number": 1
+            },
+            {
+                "type": "General Instructions & Execution of Documents",
+                "page_number": 1
+            },
+            {
+                "type": "Rescission",
+                "page_number": 2
+            },
+            {
+                "type": "Surveys / Hazard Insurance",
+                "page_number": 2
+            },
+            {
+                "type": "Title Insurance Requirements",
+                "page_number": 2
+            },
+            {
+                "type": "Settlement Agent Acknowledgment",
+                "page_number": 3
+            },
+            {
+                "type": "Closing Conditions Addendum",
+                "page_number": 4
+            }
+        ],
+        "required_documents_present": {
+            "required_documents_present": false,
+            "missing_documents": [
+                "Note",
+                "Deed",
+                "Appraisal"
+            ]
+        },
+        "key_details": {
+            "Name": "Silvio Gonzalez",
+            "Address": "92 Smith Street, Unit# 17, Chelsea, MA 02150",
+            "Borrower": "Silvio Gonzalez, Carrie Gonzalez",
+            "Additional Borrower": "",
+            "Interest Rate": "3.950%",
+            "Closing Date": "May 27, 2022",
+            "Loan Amount": "$198,000.00",
+            "Loan Number": "6009105555",
+            "Lender": "Morgan Stanley Private Bank, National Association",
+            "Appraised Value": "$360,000.00",
+            "Loan Term": "360 months (Fixed amortization)"
+        },
+        "consistency_check": {
+            "status": "Fail",
+            "inconsistencies": [
+                "Name mismatch: Name field ('Silvio Gonzalez') differs from Borrower field ('Silvio Gonzalez, Carrie Gonzalez')"
+            ]
+        }
+    },
+    "entities": {
+        "entities_by_category": {
+            "Loan_Details": {
+                "Loan Number": "6009105555",
+                "Original Loan Amount (from Loan Estimate)": "$203,000.00",
+                "Final Loan Amount": "$198,000.00",
+                "Current Loan Amount": "$198,000.00",
+                "Original Interest Rate": "3.95%",
+                "Original Amortization Term": "360 months",
+                "Amortization Type": "Fixed",
+                "First Payment Date of Loan": "July 01, 2022",
+                "Finance Charge": "$141,899.88",
+                "Amount Financed": "$196,351.35",
+                "Total of Payments": "$341,095.18",
+                "TIP (Total Interest Percentage)": "70.888%",
+                "Late Fee": "3% of the overdue monthly principal and interest payment",
+                "Primary Loan Purpose": "Refinance (from Closing Instructions)",
+                "CD Loan Purpose": "Home Equity Loan (from Closing Disclosure)",
+                "Servicing Loan Number": "0162984496"
+            },
+            "Borrower_Information": {
+                "Borrower Name": "Silvio Gonzalez; Carrie Gonzalez",
+                "Total Number of Borrowers": "2",
+                "Address": "611 Alma Way B1358, Zephyr Cove, NV 89448"
+            },
+            "Property_Information": {
+                "Property Address": "92 Smith Street, Unit# 17",
+                "City": "Chelsea",
+                "State": "MA",
+                "Occupancy": "Investment",
+                "Original Appraised Property Value": "$360,000.00"
+            },
+            "Payoffs_and_Payments": {
+                "Payoff 1 Payee": "MS LAL",
+                "Payoff 1 Amount": "$150,125.39"
+            },
+            "Closing_Costs_Summary": {
+                "Total Closing Costs": "$5,486.30",
+                "Origination Charges Subtotal": "$815.00",
+                "Services Borrower Did Not Shop For Subtotal": "$1,921.80",
+                "Services Borrower Did Shop For Subtotal": "$0.00",
+                "Taxes and Government Fees Subtotal": "$205.00",
+                "Prepaids Subtotal": "$2,213.59",
+                "Initial Escrow Payment Subtotal": "$1,130.91",
+                "Other Costs Subtotal": "$3,549.50"
+            },
+            "Escrow": {
+                "Escrow Indicator": "Yes - loan will have an escrow account",
+                "Monthly Escrow Payment": "$441.09",
+                "Property Taxes": "$1,387.44",
+                "Property Taxes Reserve": "$1,143.54",
+                "Homeowners Insurance Reserve": "$119.82",
+                "Insurance Reserves": "$119.82",
+                "Other Reserves": "$0.00",
+                "Escrow Account Details": "Escrowed Property Costs over Year 1 $5,293.08; Initial Escrow Payment $1,130.91; Monthly Escrow Payment $441.09; Monthly escrow funds include City Tax Reserves and Homeowner's Insurance reserves"
+            },
+            "Payment_Schedule": {
+                "Monthly Principal and Interest": "$939.58",
+                "Monthly Mortgage Insurance": "$0.00",
+                "Monthly Escrow": "$441.09",
+                "Current Payment Amount Due": "$939.58",
+                "Total Monthly Payment": "$1,380.67"
+            }
+        },
+        "total_fields_extracted": 47,
+        "processing_status": "success"
+    },
+    "file_url": "/media/uploaded_pdfs/clsoing%20package%20sample%20revg.cleaned.pdf",
+    "filename": "clsoing package sample revg.cleaned.pdf",
+    "item": [
+        [
+            "Description",
+            "Serial Number",
+            "Asset Tag"
+        ]
+    ]
+}

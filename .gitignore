@@ -1,0 +1,162 @@
+# ========================================
+# Python
+# ========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ========================================
+# Virtual Environments
+# ========================================
+venv/
+venv_*/
+.venv/
+ENV/
+env/
+.env/
+
+# ========================================
+# IDE / Editors
+# ========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# ========================================
+# OS Generated Files
+# ========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ========================================
+# Django (healthcare_genai)
+# ========================================
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+*.pot
+*.pyc
+staticfiles/
+media/
+
+# ========================================
+# FastAPI
+# ========================================
+FastAPI/media/uploaded_pdfs/*
+FastAPI/media/model/*
+!FastAPI/media/uploaded_pdfs/.gitkeep
+!FastAPI/media/model/.gitkeep
+
+# ========================================
+# Signature Service
+# ========================================
+signature_service/venv_signature/
+
+# ========================================
+# Environment & Secrets
+# ========================================
+.env
+.env.local
+.env.*.local
+*.env
+secrets.yaml
+secrets.json
+config.local.py
+config.local.yaml
+
+# ========================================
+# Testing & Coverage
+# ========================================
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+pytest_cache/
+
+# ========================================
+# Jupyter Notebooks
+# ========================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ========================================
+# Logs & Temp Files
+# ========================================
+*.log
+logs/
+temp/
+tmp/
+*.tmp
+*.temp
+*.bak
+
+# ========================================
+# Data Files (optional - uncomment if needed)
+# ========================================
+# data.json
+# *.json
+
+# ========================================
+# Package Manager
+# ========================================
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ========================================
+# mypy / type checking
+# ========================================
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ========================================
+# Celery
+# ========================================
+celerybeat-schedule
+celerybeat.pid
+
+# ========================================
+# Docker (if used)
+# ========================================
+*.log
+docker-compose.override.yml
