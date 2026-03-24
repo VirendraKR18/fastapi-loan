@@ -22,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-enhanced_detector = EnhancedSignatureDetection(poppler_path=settings.POPPLER_PATH)
+enhanced_detector = EnhancedSignatureDetection()
 
 # Base path for uploaded PDFs (pdf_summary media folder)
 PDF_MEDIA_BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "API", "pdf_summary", "media", "uploaded_pdfs")
@@ -48,29 +48,39 @@ async def root():
 
 @app.get("/health")
 async def health():
-    status = signature_detection_service.get_status()
+    yolo_status = signature_detection_service.get_status()
+    # Service is available as long as enhanced (OCR-based) detection works
     return {
-        "status": "healthy" if status["available"] else "degraded",
-        "signature_detection": status
+        "status": "healthy",
+        "signature_detection": {
+            "available": True,
+            "model_path": yolo_status.get("model_path", ""),
+            "model_exists": yolo_status.get("model_exists", False),
+            "yolo_available": yolo_status.get("available", False),
+            "enhanced_available": True
+        }
     }
 
 
 @app.get("/signature-detection-status")
 async def signature_detection_status():
     """Check if signature detection is available - endpoint for Angular frontend"""
-    status = signature_detection_service.get_status()
-    return status
+    yolo_status = signature_detection_service.get_status()
+    return {
+        "available": True,
+        "model_path": yolo_status.get("model_path", ""),
+        "model_exists": yolo_status.get("model_exists", False),
+        "yolo_available": yolo_status.get("available", False),
+        "enhanced_available": True
+    }
 
 
 @app.post("/detect-signatures")
 async def detect_signatures_by_filename(request: SignatureDetectionRequest):
     """
     Detect signatures by filename - endpoint for Angular frontend.
-    Reads the PDF from the pdf_summary media folder.
+    Uses YOLO if available, falls back to enhanced OCR-based detection.
     """
-    if not signature_detection_service.is_available():
-        raise HTTPException(status_code=503, detail="Signature detection service unavailable. YOLO model not found.")
-    
     # Construct the full path to the PDF file
     pdf_path = os.path.join(PDF_MEDIA_BASE, request.filename)
     
@@ -91,9 +101,62 @@ async def detect_signatures_by_filename(request: SignatureDetectionRequest):
             raise HTTPException(status_code=404, detail=f"PDF file not found: {request.filename}")
     
     try:
-        result = signature_detection_service.detect_signatures(pdf_path)
-        logger.info(f"Signature detection completed for {request.filename}")
-        return result
+        # Try YOLO first if available
+        if signature_detection_service.is_available():
+            result = signature_detection_service.detect_signatures(pdf_path)
+            logger.info(f"YOLO signature detection completed for {request.filename}")
+            return result
+        
+        # Fallback to enhanced OCR-based detection
+        logger.info(f"Using enhanced OCR-based detection for {request.filename}")
+        enhanced_result = enhanced_detector.detect_signature_fields(pdf_path)
+        
+        # Convert enhanced result to the expected response format
+        signatures_by_page = {}
+        for sig in enhanced_result.get("signatures_detected", []):
+            page = str(sig.get("page", 1))
+            if page not in signatures_by_page:
+                signatures_by_page[page] = []
+            coords = sig.get("coordinates") or {}
+            signatures_by_page[page].append({
+                "x1": coords.get("x", 0),
+                "y1": coords.get("y", 0),
+                "x2": coords.get("x", 0) + coords.get("width", 200),
+                "y2": coords.get("y", 0) + coords.get("height", 80),
+                "confidence": 0.8,
+                "type": sig.get("signature_type", "unknown"),
+                "signer": sig.get("signer_name", "")
+            })
+        
+        for field in enhanced_result.get("signature_fields", []):
+            if field.get("is_filled"):
+                page = str(field.get("page", 1))
+                if page not in signatures_by_page:
+                    signatures_by_page[page] = []
+                coords = field.get("coordinates", {})
+                signatures_by_page[page].append({
+                    "x1": coords.get("x", 0),
+                    "y1": coords.get("y", 0),
+                    "x2": coords.get("x", 0) + coords.get("width", 200),
+                    "y2": coords.get("y", 0) + coords.get("height", 80),
+                    "confidence": 0.7,
+                    "type": field.get("field_type", "signature_field"),
+                    "label": field.get("label", "")
+                })
+        
+        import fitz
+        doc = fitz.open(pdf_path)
+        total_pages = len(doc)
+        doc.close()
+        
+        return {
+            "status": "success",
+            "boxesByPage": signatures_by_page,
+            "total_pages": total_pages,
+            "pages_with_signatures": len(signatures_by_page),
+            "detection_method": "enhanced_ocr",
+            "summary": enhanced_result.get("summary", {})
+        }
         
     except Exception as e:
         logger.error(f"Signature detection failed: {e}")
@@ -102,12 +165,9 @@ async def detect_signatures_by_filename(request: SignatureDetectionRequest):
 
 @app.post("/detect")
 async def detect_signatures(file: UploadFile = File(...)):
-    """Detect visual signatures using YOLO model"""
+    """Detect signatures using YOLO model or enhanced OCR fallback"""
     if not file.filename.endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are supported")
-    
-    if not signature_detection_service.is_available():
-        raise HTTPException(status_code=503, detail="Signature detection service unavailable")
     
     temp_pdf = None
     try:
@@ -116,8 +176,60 @@ async def detect_signatures(file: UploadFile = File(...)):
             tmp.write(content)
             temp_pdf = tmp.name
         
-        result = signature_detection_service.detect_signatures(temp_pdf)
-        return result
+        # Try YOLO first
+        if signature_detection_service.is_available():
+            result = signature_detection_service.detect_signatures(temp_pdf)
+            return result
+        
+        # Fallback to enhanced OCR-based detection
+        logger.info("YOLO unavailable, using enhanced OCR detection")
+        enhanced_result = enhanced_detector.detect_signature_fields(temp_pdf)
+        
+        signatures_by_page = {}
+        for sig in enhanced_result.get("signatures_detected", []):
+            page = str(sig.get("page", 1))
+            if page not in signatures_by_page:
+                signatures_by_page[page] = []
+            coords = sig.get("coordinates") or {}
+            signatures_by_page[page].append({
+                "x1": coords.get("x", 0),
+                "y1": coords.get("y", 0),
+                "x2": coords.get("x", 0) + coords.get("width", 200),
+                "y2": coords.get("y", 0) + coords.get("height", 80),
+                "confidence": 0.8,
+                "type": sig.get("signature_type", "unknown"),
+                "signer": sig.get("signer_name", "")
+            })
+        
+        for field in enhanced_result.get("signature_fields", []):
+            if field.get("is_filled"):
+                page = str(field.get("page", 1))
+                if page not in signatures_by_page:
+                    signatures_by_page[page] = []
+                coords = field.get("coordinates", {})
+                signatures_by_page[page].append({
+                    "x1": coords.get("x", 0),
+                    "y1": coords.get("y", 0),
+                    "x2": coords.get("x", 0) + coords.get("width", 200),
+                    "y2": coords.get("y", 0) + coords.get("height", 80),
+                    "confidence": 0.7,
+                    "type": field.get("field_type", "signature_field"),
+                    "label": field.get("label", "")
+                })
+        
+        import fitz
+        doc = fitz.open(temp_pdf)
+        total_pages = len(doc)
+        doc.close()
+        
+        return {
+            "status": "success",
+            "boxesByPage": signatures_by_page,
+            "total_pages": total_pages,
+            "pages_with_signatures": len(signatures_by_page),
+            "detection_method": "enhanced_ocr",
+            "summary": enhanced_result.get("summary", {})
+        }
         
     except Exception as e:
         logger.error(f"Signature detection failed: {e}")

@@ -21,21 +21,10 @@ class SignatureDetectionRequest(BaseModel):
 @router.post("/detect-signatures")
 async def detect_signatures(request: SignatureDetectionRequest):
     """
-    Detect signatures in uploaded PDF document
-    
-    Args:
-        request: Contains filename of uploaded PDF
-        
-    Returns:
-        Detection results with bounding boxes by page
+    Detect signatures in uploaded PDF document.
+    Proxies to the signature microservice which handles YOLO/enhanced fallback.
     """
     try:
-        if not signature_detection_service.is_available():
-            raise HTTPException(
-                status_code=503,
-                detail="Signature detection service is not available. YOLO model not found."
-            )
-        
         pdf_path = os.path.join(settings.MEDIA_ROOT, request.filename)
         
         if not os.path.exists(pdf_path):
@@ -65,18 +54,18 @@ async def detect_signatures(request: SignatureDetectionRequest):
 async def get_signature_detection_status():
     """
     Check if signature detection is available
-    
-    Returns:
-        Status information about signature detection service
     """
     try:
         status = signature_detection_service.get_status()
+        # Always report available since enhanced OCR detection works without YOLO
+        status["available"] = True
+        status["enhanced_available"] = True
         return status
     except Exception as e:
         logger.error(f"Failed to get signature detection status: {e}")
         return {
-            "available": False,
-            "model_path": signature_detection_service.model_path,
+            "available": True,
+            "enhanced_available": True,
             "model_exists": False,
             "error": str(e)
         }

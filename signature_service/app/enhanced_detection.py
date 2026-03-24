@@ -1,13 +1,22 @@
 import logging
 import re
 from typing import Dict, List, Optional
-from pdf2image import convert_from_path
-import pytesseract
+import fitz  # PyMuPDF
+import easyocr
 from PIL import Image
 import cv2
 import numpy as np
 
 logger = logging.getLogger(__name__)
+
+# Initialize EasyOCR reader (lazy singleton)
+_ocr_reader = None
+
+def _get_ocr_reader():
+    global _ocr_reader
+    if _ocr_reader is None:
+        _ocr_reader = easyocr.Reader(['en'], gpu=False)
+    return _ocr_reader
 
 
 class EnhancedSignatureDetection:
@@ -31,8 +40,8 @@ class EnhancedSignatureDetection:
         r'(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+\d{1,2},?\s+\d{4}',
     ]
     
-    def __init__(self, poppler_path: Optional[str] = None):
-        self.poppler_path = poppler_path
+    def __init__(self):
+        pass
     
     def detect_signature_fields(self, pdf_path: str) -> Dict:
         """
@@ -69,18 +78,24 @@ class EnhancedSignatureDetection:
             }
         """
         try:
-            images = convert_from_path(pdf_path, poppler_path=self.poppler_path)
+            doc = fitz.open(pdf_path)
             
             signature_fields = []
             signatures_detected = []
             
-            for page_num, image in enumerate(images, start=1):
-                page_fields = self._detect_fields_in_page(image, page_num)
-                page_signatures = self._detect_signature_metadata(image, page_num)
+            for page_num in range(len(doc)):
+                page = doc.load_page(page_num)
+                mat = fitz.Matrix(2.0, 2.0)  # 2x zoom for quality
+                pix = page.get_pixmap(matrix=mat)
+                image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+                
+                page_fields = self._detect_fields_in_page(image, page_num + 1)
+                page_signatures = self._detect_signature_metadata(image, page_num + 1)
                 
                 signature_fields.extend(page_fields)
                 signatures_detected.extend(page_signatures)
             
+            doc.close()
             summary = self._generate_summary(signature_fields, signatures_detected)
             
             return {
@@ -98,19 +113,27 @@ class EnhancedSignatureDetection:
         fields = []
         
         try:
-            ocr_data = pytesseract.image_to_data(image, output_type=pytesseract.Output.DICT)
+            img_array = np.array(image)
+            reader = _get_ocr_reader()
+            results = reader.readtext(img_array)
             
             text_blocks = []
-            for i in range(len(ocr_data['text'])):
-                text = ocr_data['text'][i].strip()
+            for (bbox, text, conf) in results:
+                text = text.strip()
                 if text:
+                    x_coords = [p[0] for p in bbox]
+                    y_coords = [p[1] for p in bbox]
+                    x = int(min(x_coords))
+                    y = int(min(y_coords))
+                    w = int(max(x_coords) - x)
+                    h = int(max(y_coords) - y)
                     text_blocks.append({
                         'text': text.lower(),
-                        'x': ocr_data['left'][i],
-                        'y': ocr_data['top'][i],
-                        'width': ocr_data['width'][i],
-                        'height': ocr_data['height'][i],
-                        'conf': ocr_data['conf'][i]
+                        'x': x,
+                        'y': y,
+                        'width': w,
+                        'height': h,
+                        'conf': int(conf * 100)
                     })
             
             for block in text_blocks:
@@ -246,7 +269,10 @@ class EnhancedSignatureDetection:
         signatures = []
         
         try:
-            text = pytesseract.image_to_string(image)
+            img_array = np.array(image)
+            reader = _get_ocr_reader()
+            results = reader.readtext(img_array, detail=0)
+            text = "\n".join(results)
             
             electronic_sigs = re.finditer(
                 r'(?:electronically\s+signed\s+by|digitally\s+signed\s+by|/s/)\s*[:]*\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)',

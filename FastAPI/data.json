@@ -5,26 +5,54 @@
         "validation_error": "Invalid category: "
     },
     "summary": {
-        "Summary": "This file is a set of Closing Instructions from Morgan Stanley Private Bank, National Association for loan number 6009105555 (borrowers Silvio and Carrie Gonzalez) relating to the refinance of the investment property at 92 Smith Street, Unit #17, Chelsea, MA. It includes general and title insurance instructions, rescission guidance, hazard insurance requirements, execution and funding procedures, a Settlement Agent acknowledgment form, and a Closing Conditions Addendum. Several referenced documents/addenda (e.g., Fees/Escrows Addendum, final Closing Disclosure, final Title Policy/Commitment, recorded security instruments) are referenced but not contained within the provided pages.",
+        "Summary": "Closing Instructions package for a Morgan Stanley Private Bank loan (Loan #6009105555) for property at 92 Smith Street, Unit #17, Chelsea, MA. The document contains lender closing instructions, general instructions, execution requirements, rescision guidance, survey and hazard insurance requirements, title insurance requirements, settlement agent acknowledgment, and a Closing Conditions Addendum. It references additional required items (e.g., ALTA Title Policy, Final Closing Disclosure, Fees/Escrows Addendum, Note, Security Instrument) that are not included in the provided pages.",
         "Bookmarks": [
             {
-                "type": "Closing Instructions (header & loan summary)",
+                "type": "Closing Instructions",
                 "page_number": 1
             },
             {
-                "type": "General Instructions & Execution of Documents",
+                "type": "Execution of Documents",
                 "page_number": 1
             },
             {
-                "type": "Rescission",
+                "type": "Loan Terms (Loan Summary)",
+                "page_number": 1
+            },
+            {
+                "type": "General Instructions",
+                "page_number": 1
+            },
+            {
+                "type": "Rescission / Notice of Right to Cancel",
                 "page_number": 2
             },
             {
-                "type": "Surveys / Hazard Insurance",
+                "type": "Surveys",
+                "page_number": 2
+            },
+            {
+                "type": "Hazard Insurance / Flood Insurance",
                 "page_number": 2
             },
             {
                 "type": "Title Insurance Requirements",
+                "page_number": 2
+            },
+            {
+                "type": "Closing Disclosure (referenced - not included)",
+                "page_number": 2
+            },
+            {
+                "type": "Fees/Escrows Addendum (referenced - not included)",
+                "page_number": 2
+            },
+            {
+                "type": "Power of Attorney (requirements)",
+                "page_number": 2
+            },
+            {
+                "type": "Conditions to be Satisfied Prior to Disbursement (see addendum)",
                 "page_number": 2
             },
             {
@@ -34,45 +62,52 @@
             {
                 "type": "Closing Conditions Addendum",
                 "page_number": 4
+            },
+            {
+                "type": "Note",
+                "page_number": null
+            },
+            {
+                "type": "Deed / Security Instrument",
+                "page_number": null
+            },
+            {
+                "type": "Appraisal",
+                "page_number": null
+            },
+            {
+                "type": "ALTA Title Policy / Title Commitment (final)",
+                "page_number": null
             }
         ],
         "required_documents_present": {
             "required_documents_present": false,
             "missing_documents": [
-                "Note",
-                "Deed",
-                "Appraisal"
+                "Deed"
             ]
         },
         "key_details": {
             "Name": "Silvio Gonzalez",
-            "Address": "92 Smith Street, Unit# 17, Chelsea, MA 02150",
-            "Borrower": "Silvio Gonzalez, Carrie Gonzalez",
-            "Additional Borrower": "",
+            "Address": "92 Smith Street, Unit #17, Chelsea, MA 02150",
+            "Borrower": "Silvio Gonzalez",
+            "Additional Borrower": "Carrie Gonzalez",
             "Interest Rate": "3.950%",
-            "Closing Date": "May 27, 2022",
-            "Loan Amount": "$198,000.00",
-            "Loan Number": "6009105555",
-            "Lender": "Morgan Stanley Private Bank, National Association",
-            "Appraised Value": "$360,000.00",
-            "Loan Term": "360 months (Fixed amortization)"
+            "Closing Date": "May 27, 2022"
         },
         "consistency_check": {
-            "status": "Fail",
-            "inconsistencies": [
-                "Name mismatch: Name field ('Silvio Gonzalez') differs from Borrower field ('Silvio Gonzalez, Carrie Gonzalez')"
-            ]
+            "status": "Pass",
+            "inconsistencies": []
         }
     },
     "entities": {
         "entities_by_category": {
             "Loan_Details": {
                 "Loan Number": "6009105555",
-                "Original Loan Amount (from Loan Estimate)": "$203,000.00",
-                "Final Loan Amount": "$198,000.00",
-                "Current Loan Amount": "$198,000.00",
+                "Original Loan Amount (from Loan Estimate)": "$203,000",
+                "Final Loan Amount": "$198,000",
+                "Current Loan Amount": "$198,000",
                 "Original Interest Rate": "3.95%",
-                "Original Amortization Term": "360 months",
+                "Original Amortization Term": "360",
                 "Amortization Type": "Fixed",
                 "First Payment Date of Loan": "July 01, 2022",
                 "Finance Charge": "$141,899.88",
@@ -80,8 +115,8 @@
                 "Total of Payments": "$341,095.18",
                 "TIP (Total Interest Percentage)": "70.888%",
                 "Late Fee": "3% of the overdue monthly principal and interest payment",
-                "Primary Loan Purpose": "Refinance (from Closing Instructions)",
-                "CD Loan Purpose": "Home Equity Loan (from Closing Disclosure)",
+                "Primary Loan Purpose": "Refinance (Closing Instructions)",
+                "CD Loan Purpose": "Home Equity Loan (Closing Disclosure)",
                 "Servicing Loan Number": "0162984496"
             },
             "Borrower_Information": {
@@ -111,14 +146,14 @@
                 "Other Costs Subtotal": "$3,549.50"
             },
             "Escrow": {
-                "Escrow Indicator": "Yes - loan will have an escrow account",
+                "Escrow Indicator": "Yes",
                 "Monthly Escrow Payment": "$441.09",
                 "Property Taxes": "$1,387.44",
                 "Property Taxes Reserve": "$1,143.54",
                 "Homeowners Insurance Reserve": "$119.82",
                 "Insurance Reserves": "$119.82",
                 "Other Reserves": "$0.00",
-                "Escrow Account Details": "Escrowed Property Costs over Year 1 $5,293.08; Initial Escrow Payment $1,130.91; Monthly Escrow Payment $441.09; Monthly escrow funds include City Tax Reserves and Homeowner's Insurance reserves"
+                "Escrow Account Details": "Escrowed Property Costs over Year 1 $5,293.08; Initial Escrow Payment $1,130.91; Monthly Escrow Payment $441.09"
             },
             "Payment_Schedule": {
                 "Monthly Principal and Interest": "$939.58",
@@ -138,6 +173,11 @@
             "Description",
             "Serial Number",
             "Asset Tag"
+        ],
+        [
+            null,
+            null,
+            null
         ]
     ]
 }

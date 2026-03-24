@@ -1,5 +1,4 @@
 from pydantic_settings import BaseSettings
-from typing import Optional
 import os
 
 # Get absolute path to model
@@ -10,9 +9,6 @@ class Settings(BaseSettings):
     SERVICE_NAME: str = "Signature Detection Service"
     SERVICE_PORT: int = 8001
     MODEL_PATH: str = os.path.abspath(_MODEL_PATH)
-    POPPLER_PATH: Optional[str] = None
-    TESSERACT_PATH: Optional[str] = None
-    
     class Config:
         env_file = ".env"
 

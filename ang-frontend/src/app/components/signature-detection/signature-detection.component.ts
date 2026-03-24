@@ -36,7 +36,7 @@ export class SignatureDetectionComponent implements OnInit {
   checkAvailability(): void {
     this.signatureService.getDetectionStatus().subscribe({
       next: (status: any) => {
-        this.isAvailable = status.available && status.model_exists;
+        this.isAvailable = status.available;
       },
       error: (err: any) => {
         console.error('Failed to check signature detection availability:', err);

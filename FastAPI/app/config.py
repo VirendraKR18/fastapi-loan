@@ -1,9 +1,13 @@
 """
 Environment configuration using Pydantic Settings
 """
+import os
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
+
+# Resolve .env path relative to the repo root (one level above FastAPI/)
+_ENV_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), ".env")
 
 
 class Settings(BaseSettings):
@@ -19,14 +23,6 @@ class Settings(BaseSettings):
         description="HuggingFace embedding model name"
     )
     
-    POPPLER_PATH: str = Field(
-        default=r"C:\poppler\poppler-24.02.0\Library\bin",
-        description="Path to Poppler binaries"
-    )
-    TESSERACT_PATH: str = Field(
-        default=r"C:\Program Files\Tesseract-OCR\tesseract.exe",
-        description="Path to Tesseract executable"
-    )
     MEDIA_ROOT: str = Field(
         default="media/uploaded_pdfs/",
         description="Directory for uploaded PDFs"
@@ -50,7 +46,7 @@ class Settings(BaseSettings):
     PORT: int = Field(default=8010, description="Server port")
     
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=_ENV_FILE,
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore"

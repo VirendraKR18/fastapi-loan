@@ -5,9 +5,10 @@ import asyncio
 import json
 import os
 import io
-from PyPDF2 import PdfReader
-import pytesseract
-from pdf2image import convert_from_path
+import fitz  # PyMuPDF
+import easyocr
+from PIL import Image
+import numpy as np
 
 try:
     from azure.ai.formrecognizer import DocumentAnalysisClient
@@ -25,29 +26,40 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Initialize EasyOCR reader (lazy singleton)
+_ocr_reader = None
+
+def _get_ocr_reader():
+    global _ocr_reader
+    if _ocr_reader is None:
+        _ocr_reader = easyocr.Reader(['en'], gpu=False)
+    return _ocr_reader
+
 
 def _extract_text_with_ocr(pdf_file_path: str) -> str:
-    """Extract text from PDF using OCR"""
+    """Extract text from PDF using PyMuPDF with EasyOCR fallback for scanned pages"""
     text = ""
-    reader = PdfReader(pdf_file_path)
+    doc = fitz.open(pdf_file_path)
 
-    for page_index, page in enumerate(reader.pages, start=1):
-        page_text = page.extract_text()
+    for page_num in range(len(doc)):
+        page = doc.load_page(page_num)
+        page_text = page.get_text()
 
-        if page_text:
+        if page_text and page_text.strip():
             text += page_text
             continue
 
-        images = convert_from_path(
-            pdf_file_path,
-            first_page=page_index,
-            last_page=page_index,
-            poppler_path=settings.POPPLER_PATH,
-        )
-        for image in images:
-            ocr_text = pytesseract.image_to_string(image)
-            text += ocr_text
+        # Scanned page — render to image and run EasyOCR
+        mat = fitz.Matrix(2.0, 2.0)  # 2x zoom for better OCR
+        pix = page.get_pixmap(matrix=mat)
+        img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+        img_array = np.array(img)
 
+        reader = _get_ocr_reader()
+        results = reader.readtext(img_array, detail=0)
+        text += "\n".join(results)
+
+    doc.close()
     return text
 
 
