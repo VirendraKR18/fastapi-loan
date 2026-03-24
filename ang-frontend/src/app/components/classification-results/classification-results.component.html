@@ -1,0 +1,29 @@
+<div class="classification-results" *ngIf="classification || isLoading">
+  <div class="results-header">
+    <h2>Classification Results</h2>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-skeleton">
+    <div class="skeleton-line"></div>
+    <div class="skeleton-line short"></div>
+    <div class="skeleton-line"></div>
+  </div>
+
+  <div *ngIf="!isLoading && classification" class="results-content">
+    <div class="extracted-fields-section" *ngIf="extractedFieldsArray.length > 0">
+      <h3>Extracted Fields</h3>
+      <div class="fields-grid">
+        <div class="field-item" *ngFor="let field of extractedFieldsArray">
+          <span class="field-label">{{ formatFieldName(field.key) }}:</span>
+          <a 
+            href="#" 
+            class="field-value field-value-link" 
+            (click)="onSearchInPDF(formatFieldValue(field.value), $event)"
+            [title]="'Click to search in PDF: ' + formatFieldValue(field.value)">
+            {{ formatFieldValue(field.value) }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

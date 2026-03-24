@@ -1,0 +1,130 @@
+<div class="entities-table-container" *ngIf="entities && ((isArray(entities) && entities.length > 0) || isComprehensiveFormat || isLoading)">
+  <div class="table-header">
+    <h2>Extracted Fields</h2>
+    <div class="header-actions">
+      <span class="entity-count" *ngIf="!isLoading">{{ getTotalFieldCount() }} fields</span>
+      <button 
+        *ngIf="!isLoading && getTotalFieldCount() > 0"
+        type="button" 
+        class="export-button" 
+        (click)="exportToCSV()"
+        aria-label="Export to CSV">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Export CSV
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-skeleton">
+    <div class="skeleton-line"></div>
+    <div class="skeleton-line"></div>
+    <div class="skeleton-line short"></div>
+  </div>
+
+  <div *ngIf="!isLoading && getTotalFieldCount() === 0" class="no-entities-message">
+    <p>No entities were extracted from this document.</p>
+  </div>
+
+  <!-- Comprehensive Format with Categories -->
+  <div *ngIf="!isLoading && isComprehensiveFormat" class="comprehensive-view">
+    <div class="controls-bar">
+      <div class="search-box">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm"
+          placeholder="Search fields or values..."
+          class="search-input">
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn" (click)="expandAll()" title="Expand All">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="7 13 12 18 17 13"></polyline>
+            <polyline points="7 6 12 11 17 6"></polyline>
+          </svg>
+        </button>
+        <button class="action-btn" (click)="collapseAll()" title="Collapse All">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="17 11 12 6 7 11"></polyline>
+            <polyline points="17 18 12 13 7 18"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="category-list">
+      <div class="category-card" *ngFor="let category of filteredCategories">
+        <div class="category-header" (click)="toggleCategory(category)">
+          <svg 
+            class="chevron-icon"
+            [class.expanded]="isCategoryExpanded(category)"
+            width="20" 
+            height="20" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+          <h3>{{ formatCategoryName(category) }}</h3>
+          <span class="field-count">{{ getFilteredFields(category).length }} fields</span>
+        </div>
+
+        <div class="category-content" *ngIf="isCategoryExpanded(category)">
+          <div class="field-grid">
+            <div class="field-row" *ngFor="let field of getFilteredFields(category)">
+              <div class="field-name">{{ field.field }}</div>
+              <div class="field-value clickable" 
+                   (click)="onEntityValueClick(field.value)"
+                   title="Click to highlight in PDF">
+                {{ field.value }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-results" *ngIf="filteredCategories.length === 0">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <p>No results found for "{{ searchTerm }}"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simple Format (Legacy) -->
+  <div *ngIf="!isLoading && !isComprehensiveFormat && isArray(entities) && entities.length > 0" class="table-wrapper">
+    <table class="entities-table">
+      <thead>
+        <tr>
+          <th>Entity Type</th>
+          <th>Field Name</th>
+          <th>Field Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entity of entities">
+          <td class="entity-type">{{ entity.entity_type }}</td>
+          <td class="field-name">{{ entity.field_name }}</td>
+          <td 
+            class="field-value clickable"
+            [class.truncated]="shouldTruncate(entity.field_value)"
+            [appTooltip]="entity.field_value"
+            (click)="onEntityValueClick(entity.field_value)"
+            title="Click to highlight in PDF">
+            {{ truncateValue(entity.field_value) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

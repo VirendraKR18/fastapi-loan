@@ -1,0 +1,55 @@
+<div class="signature-detection" *ngIf="isAvailable">
+  <div class="detection-header">
+    <h3>Signature Detection</h3>
+    <button 
+      class="detect-btn"
+      (click)="detectSignatures()"
+      [disabled]="isDetecting || !filename"
+      [class.loading]="isDetecting">
+      <span *ngIf="!isDetecting">Detect Signatures</span>
+      <span *ngIf="isDetecting">Detecting...</span>
+    </button>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="detectionResult && !isDetecting" class="detection-results">
+    <div class="results-summary">
+      <div class="summary-item">
+        <span class="summary-label">Total Pages:</span>
+        <span class="summary-value">{{ detectionResult.total_pages }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Pages with Signatures:</span>
+        <span class="summary-value highlight">{{ detectionResult.pages_with_signatures }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="hasSignatures" class="signature-pages">
+      <h4>Detected Signatures by Page</h4>
+      <div class="page-list">
+        <div class="page-item" *ngFor="let pageNum of pageNumbers" (click)="onPageClick(pageNum)" role="button" tabindex="0">
+          <span class="page-number">Page {{ pageNum }}</span>
+          <span class="signature-count">{{ getSignatureCount(pageNum) }} signature(s)</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!hasSignatures" class="no-signatures">
+      No signatures detected in this document.
+    </div>
+  </div>
+
+  <div *ngIf="isDetecting" class="loading-state">
+    <div class="spinner"></div>
+    <p>Analyzing document for signatures...</p>
+  </div>
+</div>
+
+<div class="signature-unavailable" *ngIf="!isAvailable">
+  <p class="info-message">
+    Signature detection is currently unavailable. Please ensure the YOLO model is installed.
+  </p>
+</div>

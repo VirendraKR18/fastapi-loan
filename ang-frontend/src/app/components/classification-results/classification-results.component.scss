@@ -1,0 +1,187 @@
+.classification-results {
+  background-color: var(--color-neutral-0);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-base);
+  border: 1px solid var(--color-neutral-200);
+}
+
+.results-header {
+  margin-bottom: var(--spacing-5);
+
+  h2 {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-neutral-900);
+  }
+}
+
+.loading-skeleton {
+  .skeleton-line {
+    height: 16px;
+    background: linear-gradient(90deg, var(--color-neutral-200) 25%, var(--color-neutral-300) 50%, var(--color-neutral-200) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-3);
+
+    &.short {
+      width: 60%;
+    }
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.results-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.category-section {
+  h3 {
+    margin: 0 0 var(--spacing-3) 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-neutral-700);
+  }
+}
+
+.category-badge {
+  display: inline-block;
+  padding: var(--spacing-2) var(--spacing-4);
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  color: var(--color-neutral-0);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.confidence-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.confidence-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-600);
+  font-weight: var(--font-weight-medium);
+  min-width: 80px;
+}
+
+.confidence-progress {
+  flex: 1;
+  height: 10px;
+  background-color: var(--color-neutral-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-success-base), var(--color-success-dark));
+  transition: width var(--transition-slow);
+  border-radius: var(--radius-full);
+}
+
+.confidence-value {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-900);
+  font-weight: var(--font-weight-bold);
+  min-width: 50px;
+  text-align: right;
+}
+
+.extracted-fields-section {
+  h3 {
+    margin: 0 0 var(--spacing-4) 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-neutral-700);
+  }
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.field-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding: var(--spacing-3);
+  background-color: var(--color-neutral-50);
+  border-radius: var(--radius-base);
+  border: 1px solid var(--color-neutral-200);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-primary-300);
+    background-color: var(--color-primary-50);
+  }
+}
+
+.field-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-600);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field-value {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-900);
+  word-break: break-word;
+  font-weight: var(--font-weight-medium);
+}
+
+.field-value-link {
+  color: #2563eb;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+  
+  &:active {
+    color: #1e40af;
+  }
+}
+
+@media (max-width: 768px) {
+  .classification-results {
+    padding: 16px;
+  }
+
+  .fields-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .confidence-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .confidence-progress {
+    width: 100%;
+  }
+}

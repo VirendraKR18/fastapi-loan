@@ -1,0 +1,87 @@
+<div class="file-upload-container">
+  <div 
+    class="upload-zone"
+    [class.drag-over]="isDragOver"
+    [class.has-file]="selectedFile"
+    [class.has-error]="validationError"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)">
+    
+    <div *ngIf="!selectedFile" class="upload-prompt">
+      <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="17 8 12 3 7 8"></polyline>
+        <line x1="12" y1="3" x2="12" y2="15"></line>
+      </svg>
+      <p class="upload-text">Drag and drop your PDF here</p>
+      <p class="upload-subtext">or</p>
+      <label class="file-input-label">
+        <input 
+          type="file" 
+          accept=".pdf,application/pdf"
+          (change)="onFileSelected($event)"
+          class="file-input"
+          [disabled]="uploadState.status === 'uploading'">
+        <span class="browse-button">Browse Files</span>
+      </label>
+      <p class="file-requirements">PDF files only, max 10MB</p>
+    </div>
+
+    <div *ngIf="selectedFile" class="file-selected">
+      <svg class="file-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+      </svg>
+      <div class="file-info">
+        <p class="file-name">{{ selectedFile.name }}</p>
+        <p class="file-size">{{ fileSize }}</p>
+      </div>
+      <button 
+        type="button"
+        class="remove-button"
+        (click)="removeFile()"
+        [disabled]="uploadState.status === 'uploading'"
+        aria-label="Remove file">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="validationError" class="error-message" role="alert">
+    <svg class="error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    {{ validationError }}
+  </div>
+
+  <div *ngIf="uploadState.status === 'uploading'" class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="uploadState.progress"></div>
+    </div>
+    <p class="progress-text">Uploading... {{ uploadState.progress }}%</p>
+  </div>
+
+  <div *ngIf="uploadState.error" class="error-modal" role="alert">
+    <div class="error-modal-content">
+      <h3>Upload Failed</h3>
+      <p>{{ uploadState.error }}</p>
+      <button type="button" class="retry-button" (click)="onUpload()">Retry</button>
+    </div>
+  </div>
+
+  <button 
+    type="button"
+    class="upload-button"
+    (click)="onUpload()"
+    [disabled]="isUploadDisabled"
+    [class.loading]="uploadState.status === 'uploading'">
+    <span *ngIf="uploadState.status !== 'uploading'">Upload Document</span>
+    <span *ngIf="uploadState.status === 'uploading'">Processing...</span>
+  </button>
+</div>

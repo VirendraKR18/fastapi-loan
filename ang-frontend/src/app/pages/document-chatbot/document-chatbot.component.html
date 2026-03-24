@@ -1,0 +1,80 @@
+<div class="document-chatbot-page">
+  <div class="page-header">
+    <h1>Intelligent Document Chatbot</h1>
+    <p class="page-description">Ask questions about your documents using natural language queries</p>
+  </div>
+
+  <div class="chat-container">
+    <div class="welcome-banner">
+      <svg class="info-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      <p>{{ welcomeMessage }}</p>
+    </div>
+
+    <div #messagesContainer class="messages-container">
+      <app-chat-message 
+        *ngFor="let message of messages"
+        [message]="message">
+      </app-chat-message>
+
+      <div *ngIf="isTyping" class="typing-indicator">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="typing-text">AI is typing...</span>
+      </div>
+
+      <div *ngIf="messages.length === 0 && !isTyping" class="empty-state">
+        <svg class="empty-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <h3>How can I help you today?</h3>
+        <p>Try asking questions like:</p>
+        <ul class="example-questions">
+          <li (click)="askQuestion('What is the borrower name?')">"What is the borrower name?"</li>
+          <li (click)="askQuestion('What is the interest rate?')">"What is the interest rate?"</li>
+          <li (click)="askQuestion('Is the appraisal document included?')">"Is the appraisal document included?"</li>
+          <li (click)="askQuestion('What is the closing date?')">"What is the closing date?"</li>
+          <li (click)="askQuestion('List all documents in this closing package.')">"List all documents in this closing package."</li>
+        </ul>
+      </div>
+    </div>
+
+    <div *ngIf="error" class="error-message" role="alert">
+      <svg class="error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      {{ error }}
+      <button type="button" class="retry-button" (click)="retryLastMessage()">Retry</button>
+    </div>
+
+    <div class="input-container">
+      <textarea
+        [(ngModel)]="userInput"
+        (keypress)="onKeyPress($event)"
+        [disabled]="isTyping"
+        placeholder="Ask a question about your documents..."
+        class="chat-input"
+        rows="3"
+        aria-label="Document chat input"></textarea>
+      <button
+        type="button"
+        (click)="sendMessage()"
+        [disabled]="isSendDisabled"
+        class="send-button"
+        aria-label="Send message">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+<div class="main-processing-page" *ngIf="documentState$ | async as state">
+  <div class="page-header">
+    <h1>Loan Document Processing</h1>
+    <p class="page-description">Upload and analyze loan documents with AI-powered extraction</p>
+  </div>
+
+  <div class="content-layout" [class.has-sidebar]="state.uploadStatus === 'completed' && state.pdfUrl">
+    <div class="main-content">
+      <app-file-upload 
+        (uploadComplete)="onUploadComplete($event)">
+      </app-file-upload>
+
+      <div *ngIf="state.uploadStatus === 'processing'" class="processing-indicator">
+        <div class="spinner"></div>
+        <p>Processing document... This may take up to 60 seconds.</p>
+      </div>
+
+      <div *ngIf="state.uploadStatus === 'completed'" class="results-section">
+        <app-classification-results 
+          [classification]="state.classification"
+          [summary]="state.summary"
+          [isLoading]="false"
+          (searchInPDF)="onSearchInPDF($event)">
+        </app-classification-results>
+
+        <app-summary-display 
+          [summary]="state.summary"
+          [isLoading]="false">
+        </app-summary-display>
+
+        <app-entities-table 
+          [entities]="state.entities"
+          [isLoading]="false"
+          (entityValueClick)="onEntityValueClick($event)">
+        </app-entities-table>
+
+        <app-signature-detection
+          [filename]="state.filename"
+          (signatureClicked)="onSignatureClick($event)">
+        </app-signature-detection>
+      </div>
+
+      <div *ngIf="state.errorMessage" class="error-banner" role="alert">
+        <svg class="error-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ state.errorMessage }}</span>
+      </div>
+    </div>
+
+    <aside class="sidebar" *ngIf="state.uploadStatus === 'completed' && state.pdfUrl">
+      <app-pdf-preview 
+        [pdfUrl]="state.pdfUrl"
+        [isLoading]="false">
+      </app-pdf-preview>
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,181 @@
+<div class="entity-extraction-page">
+  <div class="page-header">
+    <h1>Loan Document Entity Extraction</h1>
+    <p class="subtitle">Extract 150+ fields from loan documents using AI-powered analysis</p>
+  </div>
+
+  <!-- Upload Section -->
+  <div class="upload-section" *ngIf="!extractionResult">
+    <div 
+      class="upload-area"
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event)"
+      [class.has-file]="selectedFile">
+      
+      <div class="upload-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+      </div>
+      
+      <h3>{{ selectedFile ? selectedFile.name : 'Upload Loan Document' }}</h3>
+      <p>Drag and drop a PDF file here or click to browse</p>
+      
+      <input 
+        type="file" 
+        id="fileInput" 
+        accept=".pdf"
+        (change)="onFileSelected($event)"
+        hidden>
+      
+      <label for="fileInput" class="browse-button">
+        Browse Files
+      </label>
+    </div>
+
+    <button 
+      class="extract-button"
+      [disabled]="!selectedFile || isProcessing"
+      (click)="extractEntities()">
+      <span *ngIf="!isProcessing">Extract Entities</span>
+      <span *ngIf="isProcessing">
+        <span class="spinner"></span>
+        Processing...
+      </span>
+    </button>
+
+    <div class="error-message" *ngIf="error">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      {{ error }}
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div class="results-section" *ngIf="extractionResult">
+    <!-- Statistics Header -->
+    <div class="statistics-header">
+      <div class="stat-card">
+        <div class="stat-value">{{ extractionResult.total_fields_extracted }}</div>
+        <div class="stat-label">Fields Extracted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ extractionResult.extraction_statistics.total_categories }}</div>
+        <div class="stat-label">Total Categories</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ extractionResult.extraction_statistics.categories_with_data.length }}</div>
+        <div class="stat-label">Categories with Data</div>
+      </div>
+    </div>
+
+    <!-- Controls Bar -->
+    <div class="controls-bar">
+      <div class="search-box">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm"
+          placeholder="Search fields or values..."
+          class="search-input">
+      </div>
+
+      <select [(ngModel)]="selectedCategory" class="category-filter">
+        <option value="all">All Categories</option>
+        <option *ngFor="let category of categoryList" [value]="category">
+          {{ formatCategoryName(category) }}
+        </option>
+      </select>
+
+      <div class="action-buttons">
+        <button class="action-btn" (click)="expandAll()" title="Expand All">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="7 13 12 18 17 13"></polyline>
+            <polyline points="7 6 12 11 17 6"></polyline>
+          </svg>
+        </button>
+        <button class="action-btn" (click)="collapseAll()" title="Collapse All">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="17 11 12 6 7 11"></polyline>
+            <polyline points="17 18 12 13 7 18"></polyline>
+          </svg>
+        </button>
+        <button class="action-btn export-btn" (click)="exportJSON()" title="Export JSON">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="12" y1="18" x2="12" y2="12"></line>
+            <line x1="9" y1="15" x2="12" y2="12"></line>
+            <line x1="15" y1="15" x2="12" y2="12"></line>
+          </svg>
+          JSON
+        </button>
+        <button class="action-btn export-btn" (click)="exportCSV()" title="Export CSV">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="12" y1="18" x2="12" y2="12"></line>
+            <line x1="9" y1="15" x2="12" y2="12"></line>
+            <line x1="15" y1="15" x2="12" y2="12"></line>
+          </svg>
+          CSV
+        </button>
+        <button class="action-btn reset-btn" (click)="reset()" title="New Extraction">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+          New
+        </button>
+      </div>
+    </div>
+
+    <!-- Extraction Results -->
+    <div class="extraction-results">
+      <div class="category-card" *ngFor="let category of filteredCategories">
+        <div class="category-header" (click)="toggleCategory(category)">
+          <div class="category-title">
+            <svg 
+              class="chevron-icon"
+              [class.expanded]="isCategoryExpanded(category)"
+              width="20" 
+              height="20" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <h3>{{ formatCategoryName(category) }}</h3>
+            <span class="field-count">{{ getFieldCount(category) }} fields</span>
+          </div>
+        </div>
+
+        <div class="category-content" *ngIf="isCategoryExpanded(category)">
+          <div class="field-table">
+            <div class="field-row" *ngFor="let field of getFilteredFields(category)">
+              <div class="field-name">{{ field[0] }}</div>
+              <div class="field-value">{{ field[1] }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-results" *ngIf="filteredCategories.length === 0">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <p>No results found for "{{ searchTerm }}"</p>
+      </div>
+    </div>
+  </div>
+</div>
