@@ -108,42 +108,10 @@ async def detect_signatures_by_filename(request: SignatureDetectionRequest):
             logger.info(f"YOLO signature detection completed for {request.filename}")
             return result
         
-        # Fallback to enhanced OCR-based detection
-        logger.info(f"Using enhanced OCR-based detection for {request.filename}")
+        # Use PyMuPDF-based detection
+        logger.info(f"Using PyMuPDF text-based detection for {request.filename}")
         enhanced_result = enhanced_detector.detect_signature_fields(pdf_path)
-        
-        # Convert enhanced result to the expected response format
-        signatures_by_page = {}
-        for sig in enhanced_result.get("signatures_detected", []):
-            page = str(sig.get("page", 1))
-            if page not in signatures_by_page:
-                signatures_by_page[page] = []
-            coords = sig.get("coordinates") or {}
-            signatures_by_page[page].append({
-                "x1": coords.get("x", 0),
-                "y1": coords.get("y", 0),
-                "x2": coords.get("x", 0) + coords.get("width", 200),
-                "y2": coords.get("y", 0) + coords.get("height", 80),
-                "confidence": 0.8,
-                "type": sig.get("signature_type", "unknown"),
-                "signer": sig.get("signer_name", "")
-            })
-        
-        for field in enhanced_result.get("signature_fields", []):
-            if field.get("is_filled"):
-                page = str(field.get("page", 1))
-                if page not in signatures_by_page:
-                    signatures_by_page[page] = []
-                coords = field.get("coordinates", {})
-                signatures_by_page[page].append({
-                    "x1": coords.get("x", 0),
-                    "y1": coords.get("y", 0),
-                    "x2": coords.get("x", 0) + coords.get("width", 200),
-                    "y2": coords.get("y", 0) + coords.get("height", 80),
-                    "confidence": 0.7,
-                    "type": field.get("field_type", "signature_field"),
-                    "label": field.get("label", "")
-                })
+        signatures_by_page = _build_boxes_by_page(enhanced_result)
         
         import fitz
         doc = fitz.open(pdf_path)
@@ -155,7 +123,7 @@ async def detect_signatures_by_filename(request: SignatureDetectionRequest):
             "boxesByPage": signatures_by_page,
             "total_pages": total_pages,
             "pages_with_signatures": len(signatures_by_page),
-            "detection_method": "enhanced_ocr",
+            "detection_method": "pymupdf_text",
             "summary": enhanced_result.get("summary", {})
         }
         
@@ -166,7 +134,7 @@ async def detect_signatures_by_filename(request: SignatureDetectionRequest):
 
 @app.post("/detect")
 async def detect_signatures(file: UploadFile = File(...)):
-    """Detect signatures using YOLO model or enhanced OCR fallback"""
+    """Detect signatures in uploaded PDF — uses PyMuPDF text extraction (fast, no OCR)"""
     if not file.filename.endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are supported")
     
@@ -177,46 +145,17 @@ async def detect_signatures(file: UploadFile = File(...)):
             tmp.write(content)
             temp_pdf = tmp.name
         
-        # Try YOLO first
+        # Try YOLO first if available (local dev with ultralytics)
         if signature_detection_service.is_available():
             result = signature_detection_service.detect_signatures(temp_pdf)
             return result
         
-        # Fallback to enhanced OCR-based detection
-        logger.info("YOLO unavailable, using enhanced OCR detection")
+        # Use PyMuPDF-based detection (fast, no heavy deps)
+        logger.info("Using PyMuPDF text-based signature detection")
         enhanced_result = enhanced_detector.detect_signature_fields(temp_pdf)
         
-        signatures_by_page = {}
-        for sig in enhanced_result.get("signatures_detected", []):
-            page = str(sig.get("page", 1))
-            if page not in signatures_by_page:
-                signatures_by_page[page] = []
-            coords = sig.get("coordinates") or {}
-            signatures_by_page[page].append({
-                "x1": coords.get("x", 0),
-                "y1": coords.get("y", 0),
-                "x2": coords.get("x", 0) + coords.get("width", 200),
-                "y2": coords.get("y", 0) + coords.get("height", 80),
-                "confidence": 0.8,
-                "type": sig.get("signature_type", "unknown"),
-                "signer": sig.get("signer_name", "")
-            })
-        
-        for field in enhanced_result.get("signature_fields", []):
-            if field.get("is_filled"):
-                page = str(field.get("page", 1))
-                if page not in signatures_by_page:
-                    signatures_by_page[page] = []
-                coords = field.get("coordinates", {})
-                signatures_by_page[page].append({
-                    "x1": coords.get("x", 0),
-                    "y1": coords.get("y", 0),
-                    "x2": coords.get("x", 0) + coords.get("width", 200),
-                    "y2": coords.get("y", 0) + coords.get("height", 80),
-                    "confidence": 0.7,
-                    "type": field.get("field_type", "signature_field"),
-                    "label": field.get("label", "")
-                })
+        # Convert to boxesByPage format expected by frontend
+        signatures_by_page = _build_boxes_by_page(enhanced_result)
         
         import fitz
         doc = fitz.open(temp_pdf)
@@ -228,7 +167,7 @@ async def detect_signatures(file: UploadFile = File(...)):
             "boxesByPage": signatures_by_page,
             "total_pages": total_pages,
             "pages_with_signatures": len(signatures_by_page),
-            "detection_method": "enhanced_ocr",
+            "detection_method": "pymupdf_text",
             "summary": enhanced_result.get("summary", {})
         }
         
@@ -239,6 +178,44 @@ async def detect_signatures(file: UploadFile = File(...)):
     finally:
         if temp_pdf and os.path.exists(temp_pdf):
             os.unlink(temp_pdf)
+
+
+def _build_boxes_by_page(enhanced_result: dict) -> dict:
+    """Convert enhanced detection result to boxesByPage format for frontend"""
+    signatures_by_page = {}
+    
+    for sig in enhanced_result.get("signatures_detected", []):
+        page = str(sig.get("page", 1))
+        if page not in signatures_by_page:
+            signatures_by_page[page] = []
+        coords = sig.get("coordinates") or {}
+        signatures_by_page[page].append({
+            "x1": coords.get("x", 0),
+            "y1": coords.get("y", 0),
+            "x2": coords.get("x", 0) + coords.get("width", 200),
+            "y2": coords.get("y", 0) + coords.get("height", 80),
+            "confidence": 0.85,
+            "type": sig.get("signature_type", "unknown"),
+            "signer": sig.get("signer_name", "")
+        })
+    
+    for field in enhanced_result.get("signature_fields", []):
+        page = str(field.get("page", 1))
+        if page not in signatures_by_page:
+            signatures_by_page[page] = []
+        coords = field.get("coordinates", {})
+        signatures_by_page[page].append({
+            "x1": coords.get("x", 0),
+            "y1": coords.get("y", 0),
+            "x2": coords.get("x", 0) + coords.get("width", 200),
+            "y2": coords.get("y", 0) + coords.get("height", 50),
+            "confidence": 0.7,
+            "type": field.get("field_type", "signature_field"),
+            "label": field.get("label", ""),
+            "is_filled": field.get("is_filled", False)
+        })
+    
+    return signatures_by_page
 
 
 @app.post("/detect/comprehensive")

@@ -1,11 +1,10 @@
 from pydantic_settings import BaseSettings
 import os
 
-# Get absolute path to model
+# Get absolute path to model — lives inside signature_service/media/model/
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_MODEL_PATH = os.path.join(_BASE_DIR, "..", "FastAPI", "media", "model", "best.pt")
+_MODEL_PATH = os.path.join(_BASE_DIR, "media", "model", "best.pt")
 
-# Detect deployment mode: "render" disables YOLO/EasyOCR to stay under 512 MB
 DEPLOYMENT_MODE = os.environ.get("DEPLOYMENT_MODE", "local")
 IS_RENDER = DEPLOYMENT_MODE == "render"
 

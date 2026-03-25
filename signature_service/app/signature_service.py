@@ -23,9 +23,9 @@ class SignatureDetectionService:
         if self.model is not None:
             return
 
-        # Skip YOLO on Render — not enough memory for PyTorch
+        # On Render, skip YOLO (no PyTorch installed to save memory)
         if settings.IS_RENDER:
-            logger.info("Render deployment detected — skipping YOLO model (memory constraint)")
+            logger.info("Render deployment — YOLO skipped, using OCR-based detection")
             self.model = None
             return
             
