@@ -22,6 +22,12 @@ class SignatureDetectionService:
     def _load_model(self):
         if self.model is not None:
             return
+
+        # Skip YOLO on Render — not enough memory for PyTorch
+        if settings.IS_RENDER:
+            logger.info("Render deployment detected — skipping YOLO model (memory constraint)")
+            self.model = None
+            return
             
         try:
             from ultralytics import YOLO

@@ -2,21 +2,67 @@ import logging
 import re
 from typing import Dict, List, Optional
 import fitz  # PyMuPDF
-import easyocr
 from PIL import Image
 import cv2
 import numpy as np
 
+from .config import settings
+
 logger = logging.getLogger(__name__)
 
-# Initialize EasyOCR reader (lazy singleton)
+# OCR backend selection based on deployment mode
 _ocr_reader = None
 
 def _get_ocr_reader():
+    """Get OCR reader — uses pytesseract on Render, EasyOCR locally"""
     global _ocr_reader
     if _ocr_reader is None:
-        _ocr_reader = easyocr.Reader(['en'], gpu=False)
+        if settings.IS_RENDER:
+            _ocr_reader = _TesseractReader()
+        else:
+            try:
+                import easyocr
+                _ocr_reader = _EasyOCRReader()
+            except ImportError:
+                logger.info("EasyOCR not installed, falling back to pytesseract")
+                _ocr_reader = _TesseractReader()
     return _ocr_reader
+
+
+class _EasyOCRReader:
+    """Wrapper around EasyOCR for local/high-memory environments"""
+    def __init__(self):
+        import easyocr
+        self._reader = easyocr.Reader(['en'], gpu=False)
+
+    def readtext(self, img_array, detail=1):
+        return self._reader.readtext(img_array, detail=detail)
+
+
+class _TesseractReader:
+    """Lightweight OCR using pytesseract — fits in 512 MB"""
+    def readtext(self, img_array, detail=1):
+        try:
+            import pytesseract
+            pil_img = Image.fromarray(img_array) if isinstance(img_array, np.ndarray) else img_array
+
+            if detail == 0:
+                text = pytesseract.image_to_string(pil_img)
+                return [line.strip() for line in text.split('\n') if line.strip()]
+
+            data = pytesseract.image_to_data(pil_img, output_type=pytesseract.Output.DICT)
+            results = []
+            for i in range(len(data['text'])):
+                text = data['text'][i].strip()
+                conf = int(data['conf'][i]) if data['conf'][i] != '-1' else 0
+                if text and conf > 20:
+                    x, y, w, h = data['left'][i], data['top'][i], data['width'][i], data['height'][i]
+                    bbox = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]]
+                    results.append((bbox, text, conf / 100.0))
+            return results
+        except Exception as e:
+            logger.warning(f"Tesseract OCR failed: {e}")
+            return []
 
 
 class EnhancedSignatureDetection:

@@ -52,6 +52,7 @@ async def health():
     # Service is available as long as enhanced (OCR-based) detection works
     return {
         "status": "healthy",
+        "deployment_mode": settings.DEPLOYMENT_MODE,
         "signature_detection": {
             "available": True,
             "model_path": yolo_status.get("model_path", ""),
