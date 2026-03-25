@@ -5,12 +5,12 @@
     "changeOrigin": true
   },
   "/signature-detection-status": {
-    "target": "https://signature-service-khts.onrender.com",
+    "target": "https://signature-service-x5bk.onrender.com",
     "secure": false,
     "changeOrigin": true
   },
   "/detect-signatures": {
-    "target": "https://signature-service-khts.onrender.com",
+    "target": "https://signature-service-x5bk.onrender.com",
     "secure": false,
     "changeOrigin": true
   },
