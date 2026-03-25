@@ -33,7 +33,7 @@ async def detect_signatures(request: SignatureDetectionRequest):
                 detail=f"PDF file not found: {request.filename}"
             )
         
-        result = signature_detection_service.detect_signatures(pdf_path)
+        result = await signature_detection_service.detect_signatures(pdf_path)
         
         logger.info(f"Signature detection completed for {request.filename}")
         return result
@@ -56,7 +56,7 @@ async def get_signature_detection_status():
     Check if signature detection is available
     """
     try:
-        status = signature_detection_service.get_status()
+        status = await signature_detection_service.get_status()
         # Always report available since enhanced OCR detection works without YOLO
         status["available"] = True
         status["enhanced_available"] = True
