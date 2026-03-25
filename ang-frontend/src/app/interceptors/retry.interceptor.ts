@@ -2,6 +2,11 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { retry, timer } from 'rxjs';
 
 export const retryInterceptor: HttpInterceptorFn = (req, next) => {
+  // Don't retry POST/PUT/DELETE — they are not idempotent
+  if (req.method !== 'GET') {
+    return next(req);
+  }
+
   return next(req).pipe(
     retry({
       count: 3,

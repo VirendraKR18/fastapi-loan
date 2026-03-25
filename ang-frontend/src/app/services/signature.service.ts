@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, timeout } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface SignatureBox {
@@ -36,7 +36,7 @@ export class SignatureService {
     return this.http.post<SignatureDetectionResponse>(
       `${this.apiUrl}/detect-signatures`,
       { filename }
-    );
+    ).pipe(timeout(65000));
   }
 
   getDetectionStatus(): Observable<SignatureDetectionStatus> {
