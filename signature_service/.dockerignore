@@ -1,0 +1,9 @@
+__pycache__
+*.pyc
+.git
+.env
+venv_signature
+*.bat
+*.ps1
+test_service.py
+README.md

@@ -1,13 +1,9 @@
 services:
   - type: web
     name: signature-service
-    runtime: python
-    buildCommand: |
-      apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-eng
-      pip install -r requirements-render.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    runtime: docker
+    rootDir: signature_service
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: DEPLOYMENT_MODE
         value: render
-      - key: PYTHON_VERSION
-        value: "3.11.6"
