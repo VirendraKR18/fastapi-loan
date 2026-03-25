@@ -5,18 +5,26 @@
         "validation_error": "Invalid category: "
     },
     "summary": {
-        "Summary": "This document is a set of Closing Instructions and Closing Conditions for a mortgage loan (Loan Number 6009105555) originated by Morgan Stanley Private Bank, N.A. The package provides loan terms (loan amount, interest rate, term, first payment date, maturity date, occupancy, appraisal value), general closing requirements and procedures (identification, execution, corrections), rescission rules, survey and hazard insurance requirements, title insurance requirements and endorsements, instructions for delivery of executed closing package and Closing Disclosure, and a Closing Conditions Addendum listing required items to be satisfied prior to disbursement. It includes a Settlement Agent Acknowledgment form and references additional addenda (Fees/Escrows Addendum and Closing Condition Addendum).",
+        "Summary": "This PDF contains the Closing Instructions and Closing Conditions Addendum for a refinance mortgage loan for property at 92 Smith Street, Unit# 17, Chelsea, MA. It outlines loan terms (loan amount $198,000; interest rate 3.950%; 360-month fixed amortization), lender and settlement agent instructions, title insurance requirements, hazard insurance and survey requirements, execution and rescission procedures, and a list of conditions that must be satisfied prior to disbursement. Several referenced documents (e.g., Note, Deed, Appraisal, ALTA Title Policy, Closing Disclosure, Fees/Escrows Addendum) are mentioned but not included in the provided pages.",
         "Bookmarks": [
             {
-                "type": "Closing Instructions / Loan Terms",
+                "type": "Closing Instructions",
                 "page_number": 1
             },
             {
-                "type": "General Instructions / Execution of Documents",
+                "type": "Loan Terms",
                 "page_number": 1
             },
             {
-                "type": "Rescission",
+                "type": "General Instructions",
+                "page_number": 1
+            },
+            {
+                "type": "Execution of Documents",
+                "page_number": 2
+            },
+            {
+                "type": "Rescission / Notice of Right to Cancel",
                 "page_number": 2
             },
             {
@@ -32,20 +40,46 @@
                 "page_number": 2
             },
             {
+                "type": "Secondary Financing / Power of Attorney / Closing Disclosure (instructions)",
+                "page_number": 3
+            },
+            {
                 "type": "Settlement Agent Acknowledgment",
                 "page_number": 3
             },
             {
                 "type": "Closing Conditions Addendum",
                 "page_number": 4
+            },
+            {
+                "type": "Fees/Escrows Addendum (referenced, not included)",
+                "page_number": null
+            },
+            {
+                "type": "Note",
+                "page_number": null
+            },
+            {
+                "type": "Deed / Security Instrument",
+                "page_number": null
+            },
+            {
+                "type": "Appraisal",
+                "page_number": null
+            },
+            {
+                "type": "ALTA Title Policy / Final Title Commitment",
+                "page_number": null
+            },
+            {
+                "type": "Final Closing Disclosure",
+                "page_number": null
             }
         ],
         "required_documents_present": {
             "required_documents_present": false,
             "missing_documents": [
-                "Note",
-                "Deed",
-                "Appraisal"
+                "Deed"
             ]
         },
         "key_details": {
@@ -69,7 +103,7 @@
                 "Final Loan Amount": "$198,000",
                 "Current Loan Amount": "$198,000",
                 "Original Interest Rate": "3.95%",
-                "Original Amortization Term": "360 Months",
+                "Original Amortization Term": "360 months",
                 "Amortization Type": "Fixed",
                 "First Payment Date of Loan": "July 01, 2022",
                 "Finance Charge": "$141,899.88",
@@ -77,25 +111,96 @@
                 "Total of Payments": "$341,095.18",
                 "TIP (Total Interest Percentage)": "70.888%",
                 "Late Fee": "3% of the overdue monthly principal and interest payment",
-                "Primary Loan Purpose": "Refinance",
-                "CD Loan Purpose": "Home Equity Loan",
-                "Servicing Loan Number": "0162984496"
+                "Primary Loan Purpose": "Refinance (Closing Instructions)",
+                "CD Loan Purpose": "Home Equity Loan (Closing Disclosure)",
+                "Servicing Loan Number": "0162984496",
+                "Loan Term (Closing Instructions)": "360 Months",
+                "Loan Term (Closing Disclosure)": "30 years",
+                "Loan Type (Closing Instructions)": "Non-Conforming",
+                "Loan Type (Closing Disclosure)": "Conventional",
+                "Product (Closing Disclosure)": "Fixed Rate",
+                "Prepayment Penalty": "NO",
+                "Balloon Payment": "NO",
+                "First P&I Amount": "$939.58",
+                "Payment Calculation Period": "Years 1-30",
+                "Payment Stream Number of Payments": "359",
+                "Payment Stream Amount of Payments": "$939.58",
+                "Payment Stream Payments Due Monthly Beginning": "July 01, 2022",
+                "Servicer Contact (Lender Contact)": "Debi La Rosa",
+                "Lender Name": "Morgan Stanley Private Bank, National Association",
+                "Lender Address": "4270 Ivy Pointe Blvd, Suite 400, Cincinnati, OH 45245",
+                "Lender NMLS ID": "663185",
+                "Lender Email": "Debi.Larosa@morganstanley.com",
+                "Closing Date": "05/27/2022",
+                "Disbursement Date": "05/27/2022",
+                "Date Issued (CD)": "05/26/2022",
+                "Rescission Date": "_________________",
+                "Origination Date (from documents)": "May 27, 2022",
+                "Index": "N/A",
+                "Margin": "N/A",
+                "Rate Caps": "N/A",
+                "ARM Info Desc": "N/A",
+                "Appraised Value (Closing Instructions)": "$360,000.00",
+                "Finance Charge Source": "Closing Disclosure page 5",
+                "Amount Financed Source": "Closing Disclosure page 5",
+                "Total of Payments Source": "Closing Disclosure page 5",
+                "TIP Source": "Closing Disclosure page 5",
+                "TRID Charges That Cannot Increase - Tolerance Amount": "$2,161.80",
+                "TRID Charges That Cannot Increase - Actual Amount": "$1,546.80",
+                "TRID 10% Charges Tolerance Amount": "$2,130.95",
+                "TRID 10% Charges Actual Amount": "$1,395.00",
+                "TRID Charges That Can Change - Aggregate Escrow Tolerance Amount": "$-476.00",
+                "TRID Charges That Can Change - Aggregate Escrow Actual Amount": "$-132.45",
+                "TRID Per Diem Interest Tolerance Amount": "$329.55",
+                "TRID Per Diem Interest Actual Amount": "$107.15"
             },
             "Borrower_Information": {
                 "Borrower Name": "Silvio Gonzalez; Carrie Gonzalez",
                 "Total Number of Borrowers": "2",
-                "Address": "611 Alma Way B1358, Zephyr Cove, NV 89448"
+                "Address": "611 Alma Way B1358, Zephyr Cove, NV 89448",
+                "Borrower 1 Name": "Silvio Gonzalez",
+                "Borrower 1 SSN": "111-22-3333",
+                "Borrower 1 DOB": "08/13/1982",
+                "Borrower 1 Email": "Silvio.Gonzalez@gmail.com",
+                "Borrower 1 Home Phone": "(617) 697-1998",
+                "Borrower 1 Cell Phone": "(617) 697-1998",
+                "Borrower 1 Employer": "Alvarez & Marsal",
+                "Borrower 1 Employer Address": "600 Madison, NY, NY 10022",
+                "Borrower 1 Position": "director of Relationship Management",
+                "Borrower 1 Gross Monthly Income Base": "$13,750.00",
+                "Borrower 1 Gross Monthly Income Bonus": "$2,812.50",
+                "Borrower 1 Other Monthly Income": "$5,032.02",
+                "Borrower 1 Total Monthly Income": "$16,562.50",
+                "Borrower 2 Name": "Carrie Gonzalez",
+                "Borrower 2 SSN": "555-66-7777",
+                "Borrower 2 DOB": "10/01/1983",
+                "Borrower 2 Email": "Carrie.Gonzalez@gmail.com",
+                "Borrower 2 Home Phone": "(917) 225-3062",
+                "Borrower 2 Cell Phone": "(917) 225-3062",
+                "Borrower 2 Employer": "LEAFLINK INC",
+                "Borrower 2 Employer Phone": "(855) 273-6769",
+                "Borrower 2 Employer Address": "85 BROAD ST, NEW YORK, NY 10002",
+                "Borrower 2 Position": "HEAD OF PEOPLE Dispensary BUSINESS",
+                "Borrower 2 Total Monthly Other Income": "$0.00",
+                "Mailing Address Same As Current": "Yes"
             },
             "Property_Information": {
-                "Property Address": "92 Smith Street, Unit# 17",
+                "Property Address": "92 Smith Street, Unit# 17, Chelsea, MA 02150",
                 "City": "Chelsea",
                 "State": "MA",
+                "ZIP": "02150",
                 "Occupancy": "Investment",
-                "Original Appraised Property Value": "$360,000.00"
+                "Original Appraised Property Value": "$360,000.00",
+                "Sales Price": "$",
+                "Security Interest Property": "92 Smith Street, Unit# 17, Chelsea, MA 02150",
+                "Vesting (Title) to read": "Casa Abby LLC, a Massachusetts Limited Liability Company",
+                "Survey Requirement": "Survey required if survey exception appears on title"
             },
             "Payoffs_and_Payments": {
                 "Payoff 1 Payee": "MS LAL",
-                "Payoff 1 Amount": "$150,125.39"
+                "Payoff 1 Amount": "$150,125.39",
+                "K. TOTAL PAYOFFS AND PAYMENTS": "$150,125.39",
+                "Use this table to see a summary of your payoffs and payments to others from your loan amount": "MS LAL to pay off other liabilities $150,125.39"
             },
             "Closing_Costs_Summary": {
                 "Total Closing Costs": "$5,486.30",
@@ -105,27 +210,45 @@
                 "Taxes and Government Fees Subtotal": "$205.00",
                 "Prepaids Subtotal": "$2,213.59",
                 "Initial Escrow Payment Subtotal": "$1,130.91",
-                "Other Costs Subtotal": "$3,549.50"
+                "Other Costs Subtotal": "$3,549.50",
+                "Closing Costs Subtotals (D + I) per CD": "$6,286.30",
+                "Lender Credits": "-$800.00",
+                "Cash to Close": "$42,388.31",
+                "Closing Costs Financed (Paid from your Loan Amount)": "$5,486.30",
+                "Subtotal of Borrower Amount Column (Fees/Escrows Addendum)": "$5,048.24",
+                "Totals from Itemization of LE/CD Fees": "$6,286.30"
             },
             "Escrow": {
                 "Escrow Indicator": "Yes",
                 "Monthly Escrow Payment": "$441.09",
                 "Property Taxes": "$1,387.44",
-                "Property Taxes Reserve": "$1,143.54",
-                "Homeowners Insurance Reserve": "$119.82",
+                "Property Taxes Reserve (City Tax Reserves 3 months)": "$1,143.54",
+                "Homeowners Insurance Reserve (2 months)": "$119.82",
                 "Insurance Reserves": "$119.82",
                 "Other Reserves": "$0.00",
-                "Escrow Account Details": "Initial Escrow Payment $1,130.91; Escrowed Property Costs over Year 1 $5,293.08; Monthly Escrow Payment $441.09"
+                "Escrowed Property Costs over Year 1": "$5,293.08",
+                "Non-Escrowed Property Costs over Year 1": "$4,104.00",
+                "Initial Escrow Payment": "$1,130.91",
+                "Aggregate Adjustment": "-$132.45",
+                "Escrow Account Details": "Escrowed property costs $5,293.08 over year 1; Initial escrow payment $1,130.91; Monthly escrow payment $441.09; City tax reserves 3 months $1,143.54; Homeowner's insurance reserves 2 months $119.82; Aggregate adjustment -$132.45"
             },
             "Payment_Schedule": {
                 "Monthly Principal and Interest": "$939.58",
                 "Monthly Mortgage Insurance": "$0.00",
                 "Monthly Escrow": "$441.09",
                 "Current Payment Amount Due": "$1,380.67",
-                "Total Monthly Payment": "$1,380.67"
+                "Total Monthly Payment": "$1,380.67",
+                "Estimated Taxes Insurance & Assessments (monthly)": "$783.09",
+                "Estimated Total Monthly Payment (CD)": "$1,380.67",
+                "Per Diem Interest": "$21.43 per day",
+                "Per Diem Interest Total (5 days)": "$107.15",
+                "Monthly P&I Start Date": "July 01, 2022",
+                "Loan Maturity Date": "June 01, 2052",
+                "Total Number of Payments": "360",
+                "First Payment Amount (note/exception)": "$942.01 (listed as final payment example)"
             }
         },
-        "total_fields_extracted": 47,
+        "total_fields_extracted": 136,
         "processing_status": "success"
     },
     "file_url": "/media/uploaded_pdfs/clsoing%20package%20sample%20revg.cleaned.pdf",
